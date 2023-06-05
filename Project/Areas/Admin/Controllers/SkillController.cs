@@ -17,13 +17,14 @@ public class SkillController : Controller
         _context = context;
         _webHostEnvironment = webHostEnvironment;
     }
+
     public async Task<IActionResult> Index(int? id)
     {
         ViewBag.Teachers = await _context.Teachers.Where(t => !t.IsDeleted).ToListAsync();
 
         if (id == null)
         {
-            var skills = await _context.Skills.Where(c => !c.IsDeleted).Include(c => c.Teacher).ToListAsync();
+            var skills = await _context.Skills.Where(c => !c.IsDeleted).Include(c => c.Teacher).Where(c=> !c.Teacher.IsDeleted).ToListAsync();
             return View(skills);
 
         }

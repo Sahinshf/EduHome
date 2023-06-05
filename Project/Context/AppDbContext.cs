@@ -22,6 +22,8 @@ namespace Project.Context
 
         public DbSet<Blog> Blogs { get; set; }  
 
+        public DbSet<Subscribe> Subscribes { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<BaseEntity>();

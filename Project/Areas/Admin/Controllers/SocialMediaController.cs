@@ -19,7 +19,7 @@ public class SocialMediaController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var socialMedias = await _context.SocialMedias.Where(s => !s.IsDeleted).Include(c => c.Teacher).ToListAsync();
+        var socialMedias = await _context.SocialMedias.Where(s => !s.IsDeleted).Include(c => c.Teacher).Where(z=>!z.Teacher.IsDeleted).ToListAsync();
 
         return View(socialMedias);
     }

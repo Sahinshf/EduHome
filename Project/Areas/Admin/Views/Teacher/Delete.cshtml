@@ -1,4 +1,4 @@
-﻿@model Teacher
+﻿    @model Teacher
 @{
     ViewData["Title"] = "Delete";
 }
@@ -14,7 +14,7 @@
             <h4>Skills : </h4>
             @foreach (var item in Model.Skills)
             {
-                <h4>Name: @item.Name</h4>
+                <h4>@item.Name</h4>
             }
 
 

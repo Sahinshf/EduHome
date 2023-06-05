@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Project.Areas.Admin.ViewModels;
 using Project.Models;
 using Project.Utils;
+using System.Security.Policy;
 using TechTalk.SpecFlow;
 
 namespace Project.Areas.Admin.Controllers;
@@ -24,7 +25,7 @@ public class EventController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var events = await _context.Events.Include(c => c.EventSpeakers).ThenInclude(e => e.Speaker).Where(c=>!c.IsDeleted).ToArrayAsync();
+        var events = await _context.Events.Include(c => c.EventSpeakers).ThenInclude(e => e.Speaker).Where(c => !c.IsDeleted).ToArrayAsync();
 
         var allEvents = new List<AllEventsViewModel>();
 
@@ -32,11 +33,12 @@ public class EventController : Controller
         {
             var speaker = eventt.EventSpeakers.Where(c => !c.Speaker.IsDeleted).Select(c => c.Speaker.Name);
 
-            var allEventViewModel = new AllEventsViewModel { 
-                Id= eventt.Id,
-                Name= eventt.Name,
-                Image= eventt.Image,
-                Speakers = string.Join(", " , speaker)
+            var allEventViewModel = new AllEventsViewModel
+            {
+                Id = eventt.Id,
+                Name = eventt.Name,
+                Image = eventt.Image,
+                Speakers = string.Join(", ", speaker)
             };
 
             allEvents.Add(allEventViewModel);
@@ -48,9 +50,9 @@ public class EventController : Controller
 
     public async Task<IActionResult> Create()
     {
-        ViewBag.Speakers =await _context.Speakers.ToListAsync();
+        ViewBag.Speakers = await _context.Speakers.ToListAsync();
 
-        return View();  
+        return View();
     }
 
     [HttpPost]
@@ -59,7 +61,7 @@ public class EventController : Controller
     {
         ViewBag.Speakers = await _context.Speakers.ToListAsync();
 
-        if (!ModelState.IsValid)return View();
+        if (!ModelState.IsValid) return View();
 
         if (eventViewModel.SpeakersIds.Length == 0)
         {
@@ -79,11 +81,11 @@ public class EventController : Controller
         {
             Name = eventViewModel.Name,
             Image = filename,
-            EventDate= eventViewModel.EventDate,
-            EventStartTime= eventViewModel.EventStartTime,
-            EventEndTime= eventViewModel.EventEndTime,
-            Venue= eventViewModel.Venue,
-            Description = eventViewModel.Description,            
+            EventDate = eventViewModel.EventDate,
+            EventStartTime = eventViewModel.EventStartTime,
+            EventEndTime = eventViewModel.EventEndTime,
+            Venue = eventViewModel.Venue,
+            Description = eventViewModel.Description,
             IsDeleted = false
         };
 
@@ -91,15 +93,35 @@ public class EventController : Controller
 
         foreach (var speaker in eventViewModel.SpeakersIds)
         {
-            var allSpeaker = new EventSpeaker { 
+            var allSpeaker = new EventSpeaker
+            {
                 SpeakerId = speaker,
                 EventId = 9
             };
-            speakers.Add(allSpeaker);   
+            speakers.Add(allSpeaker);
         }
 
         newEvent.EventSpeakers = speakers;
         await _context.Events.AddAsync(newEvent);
+
+        EmailHelper emailHelper = new EmailHelper();
+
+
+        foreach (var user in _context.Subscribes)
+        {
+
+            MailRequestViewModel mailRequestViewModel = new()
+            {
+
+                ToEmail = user.Email,
+                Subject = "New Event",
+                Body = $"<p>Name : {eventViewModel.Name} | Time : {eventViewModel.EventDate}</p>"
+            };
+            await emailHelper.SendEmailAsync(mailRequestViewModel);
+        }
+
+
+
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -109,12 +131,13 @@ public class EventController : Controller
     {
         ViewBag.Speakers = await _context.Speakers.ToListAsync();
 
-        Event eventt = await _context.Events.Include(e=>e.EventSpeakers).ThenInclude(e=>e.Speaker).FirstOrDefaultAsync(c=>c.Id == id && !c.IsDeleted);
-        if(eventt == null) return NotFound();
+        Event eventt = await _context.Events.Include(e => e.EventSpeakers).ThenInclude(e => e.Speaker).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        if (eventt == null) return NotFound();
 
-        ViewBag.SelectedSpeakers = string.Join(", ", eventt.EventSpeakers.Where(cc => !cc.Speaker.IsDeleted ).Select(c => c.Speaker.Name));
+        ViewBag.SelectedSpeakers = string.Join(", ", eventt.EventSpeakers.Where(cc => !cc.Speaker.IsDeleted).Select(c => c.Speaker.Name));
 
-        EventViewModel eventViewModel = new EventViewModel {
+        EventViewModel eventViewModel = new EventViewModel
+        {
             Name = eventt.Name,
             EventDate = eventt.EventDate,
             EventStartTime = eventt.EventStartTime,
@@ -128,9 +151,9 @@ public class EventController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(int id , EventViewModel eventViewModel)
+    public async Task<IActionResult> Update(int id, EventViewModel eventViewModel)
     {
-        ViewBag.Speakers = await _context.Speakers.Where(c=>!c.IsDeleted).ToListAsync();
+        ViewBag.Speakers = await _context.Speakers.Where(c => !c.IsDeleted).ToListAsync();
 
         if (!ModelState.IsValid) return View();
 
@@ -140,8 +163,8 @@ public class EventController : Controller
             return View();
         }
 
-        Event eventt =await _context.Events.Include(c => c.EventSpeakers).ThenInclude(c => c.Speaker).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
-        if(eventt == null) return NotFound();
+        Event eventt = await _context.Events.Include(c => c.EventSpeakers).ThenInclude(c => c.Speaker).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        if (eventt == null) return NotFound();
 
         if (eventViewModel.Image != null)
         {
@@ -160,8 +183,8 @@ public class EventController : Controller
         }
 
         eventt.Name = eventViewModel.Name;
-        eventt.Venue= eventViewModel.Venue;
-        eventt.Description= eventViewModel.Description;
+        eventt.Venue = eventViewModel.Venue;
+        eventt.Description = eventViewModel.Description;
         eventt.EventDate = eventViewModel.EventDate;
         eventt.EventStartTime = eventViewModel.EventStartTime;
         eventt.EventStartTime = eventViewModel.EventStartTime;
@@ -212,7 +235,7 @@ public class EventController : Controller
         Event eventt = await _context.Events.Include(c => c.EventSpeakers).ThenInclude(c => c.Speaker).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         if (eventt == null) return NotFound();
 
-        eventt.IsDeleted= true;
+        eventt.IsDeleted = true;
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));

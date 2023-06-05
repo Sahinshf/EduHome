@@ -1,6 +1,8 @@
-﻿namespace Project.Models;
+﻿using Project.Models.Common;
 
-public class Blog
+namespace Project.Models;
+
+public class Blog : BaseEntity
 {
     public int Id { get; set; }
     public string Image { get; set; }

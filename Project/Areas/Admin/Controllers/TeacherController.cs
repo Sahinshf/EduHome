@@ -165,10 +165,11 @@ public class TeacherController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        Teacher teacher = await _context.Teachers.Include(c => c.Skills).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        Teacher teacher = await _context.Teachers.Include(c => c.Skills).Include(c => c.SocialMedias).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         if (teacher == null) return NotFound();
 
         teacher.Skills = teacher.Skills.Where(c => !c.IsDeleted).ToList();
+        teacher.SocialMedias = teacher.SocialMedias.Where(c => !c.IsDeleted).ToList();
 
         return View(teacher);
     }

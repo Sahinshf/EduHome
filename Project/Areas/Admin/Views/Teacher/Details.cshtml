@@ -32,6 +32,14 @@
                 </h4>
             }
 
+            <h4><strong>Social Media Accounts :</strong>  </h4>
+            @foreach (var item in Model.SocialMedias)
+            {
+                <h4>
+                    <a href="@item.Account"><i style="font-size:24px;" class="@item.Name"></i></a>
+                </h4>
+            }
+
             <a class="btn btn-info" asp-action="Index">Go Back</a>
         </div>
     </div>

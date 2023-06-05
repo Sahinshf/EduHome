@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kCh6kNHxyLVdA17J/sR13dgVtceenfqG7I/ySxsxcaL4kZl6mhJhKuHxJBeigenMqoUQLvAo6IMd9VtLY+j+OA==",
+  "dgSpecHash": "crwIK8/xAoT5F1DVHeEUbsiaTY8WyimYkutDMehHpRU9WyXqaIljiXqLi0UZj5Ct00AJ+MSr0WNOrISZkyEVIg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\Project\\Project\\Project.csproj",
+  "projectFilePath": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\Project.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Şahin\\.nuget\\packages\\bodi\\1.5.0\\bodi.1.5.0.nupkg.sha512",
     "C:\\Users\\Şahin\\.nuget\\packages\\bouncycastle.cryptography\\2.1.1\\bouncycastle.cryptography.2.1.1.nupkg.sha512",
