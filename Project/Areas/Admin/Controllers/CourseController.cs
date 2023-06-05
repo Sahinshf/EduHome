@@ -35,7 +35,7 @@ public class CourseController : Controller
         {
             var categories = course.CourseCategories
             .Where(cc => cc.Category.IsDeleted == false)
-            .Select(c=> c.Category.Name);
+            .Select(c => c.Category.Name);
 
             var courseViewModel = new AllCourseViewModel
             {
@@ -68,10 +68,14 @@ public class CourseController : Controller
         {
             return View();
         }
-
-        if( courseViewModel.Image is null)
+        if (courseViewModel.Image is null)
         {
             ModelState.AddModelError("Image", "Add Image");
+            return View();
+        }
+        if (!courseViewModel.Image.CheckFileType("image"))
+        {
+            ModelState.AddModelError("Image", "File Type Must be Image.");
             return View();
         }
 
@@ -128,7 +132,7 @@ public class CourseController : Controller
 
     public async Task<IActionResult> Update(int id)
     {
-        ViewBag.Categories = _context.Categories.Where(c=> !c.IsDeleted).AsEnumerable();
+        ViewBag.Categories = _context.Categories.Where(c => !c.IsDeleted).AsEnumerable();
 
         Course? course = await _context.Courses.Include(c => c.CourseCategories).ThenInclude(c => c.Category).FirstOrDefaultAsync(c => c.Id == id);
         if (course.IsDeleted == true) return BadRequest();
@@ -159,22 +163,26 @@ public class CourseController : Controller
     {
         ViewBag.Categories = _context.Categories.Where(c => !c.IsDeleted).AsEnumerable();
 
-        if (!ModelState.IsValid) return View(); ;
-
+        if (!ModelState.IsValid) return View();
 
         if (courseViewModel.CategoriesIds.Length == 0)
         {
             ModelState.AddModelError("CategoriesIds", "Select Category");
             return View();
         }
-        
+
         Course? course = await _context.Courses.Include(c => c.CourseCategories).ThenInclude(c => c.Category).FirstOrDefaultAsync(c => c.Id == id);
-        
+
         if (course.IsDeleted == true) return BadRequest();
         if (course is null) return NotFound();
 
         if (courseViewModel.Image != null)
         {
+            if (!courseViewModel.Image.CheckFileType("image"))
+            {
+                ModelState.AddModelError("Image", "File Type Must be Image.");
+                return View();
+            }
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "course", course?.Image);
             FileService.DeleteFile(path);
 
@@ -247,7 +255,7 @@ public class CourseController : Controller
 
         if (course.IsDeleted == true) return BadRequest();
         if (course is null) return NotFound();
-        
+
         course.IsDeleted = true;
         await _context.SaveChangesAsync();
 

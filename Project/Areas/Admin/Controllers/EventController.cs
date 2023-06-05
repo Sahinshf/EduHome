@@ -62,7 +62,16 @@ public class EventController : Controller
         ViewBag.Speakers = await _context.Speakers.ToListAsync();
 
         if (!ModelState.IsValid) return View();
-
+        if (eventViewModel.Image is null)
+        {
+            ModelState.AddModelError("Image", "Add Image");
+            return View();
+        }
+        if (!eventViewModel.Image.CheckFileType("image"))
+        {
+            ModelState.AddModelError("Image", "File Type Must be Image.");
+            return View();
+        }
         if (eventViewModel.SpeakersIds.Length == 0)
         {
             ModelState.AddModelError("SpeakersIds", "Select Category");
@@ -156,7 +165,6 @@ public class EventController : Controller
         ViewBag.Speakers = await _context.Speakers.Where(c => !c.IsDeleted).ToListAsync();
 
         if (!ModelState.IsValid) return View();
-
         if (eventViewModel.SpeakersIds.Length == 0)
         {
             ModelState.AddModelError("SpeakersIds", "Select Category");
@@ -168,6 +176,11 @@ public class EventController : Controller
 
         if (eventViewModel.Image != null)
         {
+        if (!eventViewModel.Image.CheckFileType("image"))
+        {
+            ModelState.AddModelError("Image", "File Type Must be Image.");
+            return View();
+        }
             var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "event", eventt.Image);
             FileService.DeleteFile(oldPath);
 

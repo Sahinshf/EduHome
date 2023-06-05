@@ -24,7 +24,7 @@ public class SpeakerController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var speaker =await _context.Speakers.Where(c=>!c.IsDeleted).ToListAsync();
+        var speaker = await _context.Speakers.Where(c => !c.IsDeleted).ToListAsync();
 
         return View(speaker);
     }
@@ -39,7 +39,6 @@ public class SpeakerController : Controller
     public async Task<IActionResult> Create(SpeakerViewModel speakerViewModel)
     {
         if (!ModelState.IsValid) return View();
-
         if (speakerViewModel.Image == null)
         {
             ModelState.AddModelError("Image", "Select Image");
@@ -47,20 +46,21 @@ public class SpeakerController : Controller
         }
         if (!speakerViewModel.Image.CheckFileType("image"))
         {
-            ModelState.AddModelError("Image", "The file type must be image");
+            ModelState.AddModelError("Image", "File Type Must be Image.");
             return View();
         }
 
         string filename = $"{Guid.NewGuid()} - {speakerViewModel.Image.FileName}";
-        string path = Path.Combine(_webHostEnvironment.WebRootPath, "img" , "event" , filename);
+        string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "event", filename);
 
         using (FileStream stream = new FileStream(path, FileMode.Create))
         {
             await speakerViewModel.Image.CopyToAsync(stream);
         }
 
-        Speaker speaker = new() { 
-            Image= filename,
+        Speaker speaker = new()
+        {
+            Image = filename,
             Name = speakerViewModel.Name,
             Profession = speakerViewModel.Profession,
         };
@@ -77,9 +77,10 @@ public class SpeakerController : Controller
         if (speaker.IsDeleted == true) return BadRequest();
         if (speaker is null) return NotFound();
 
-        SpeakerViewModel speakerView = new() { 
-            Id= id,
-            Name= speaker.Name,
+        SpeakerViewModel speakerView = new()
+        {
+            Id = id,
+            Name = speaker.Name,
             Profession = speaker.Profession
         };
 
@@ -91,13 +92,17 @@ public class SpeakerController : Controller
     public async Task<IActionResult> Update(SpeakerViewModel speakerViewModel)
     {
         if (!ModelState.IsValid) return View();
-
-        Speaker speaker =await _context.Speakers.Include(c=>c.EventSpeakers).ThenInclude(c=>c.Event).FirstOrDefaultAsync(c=>c.Id== speakerViewModel.Id);
+        Speaker speaker = await _context.Speakers.Include(c => c.EventSpeakers).ThenInclude(c => c.Event).FirstOrDefaultAsync(c => c.Id == speakerViewModel.Id);
 
         if (speaker is null) return NotFound();
 
         if (speakerViewModel.Image != null)
         {
+            if (!speakerViewModel.Image.CheckFileType("image"))
+            {
+                ModelState.AddModelError("Image", "File Type Must be Image.");
+                return View();
+            }
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "event", speaker?.Image);
             FileService.DeleteFile(path);
 
@@ -122,7 +127,7 @@ public class SpeakerController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
-        Speaker speaker = await _context.Speakers.FirstOrDefaultAsync(c=> c.Id == id);
+        Speaker speaker = await _context.Speakers.FirstOrDefaultAsync(c => c.Id == id);
         if (speaker is null) return NotFound();
 
         return View(speaker);
@@ -149,7 +154,7 @@ public class SpeakerController : Controller
         Speaker speaker = await _context.Speakers.Include(c => c.EventSpeakers).ThenInclude(c => c.Event).FirstOrDefaultAsync(c => c.Id == id);
         if (speaker is null) return NotFound();
 
-        speaker.EventSpeakers = speaker.EventSpeakers.Where(c=> !c.Event.IsDeleted).ToList();
+        speaker.EventSpeakers = speaker.EventSpeakers.Where(c => !c.Event.IsDeleted).ToList();
 
         return View(speaker);
     }

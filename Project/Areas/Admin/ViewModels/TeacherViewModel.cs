@@ -31,6 +31,6 @@ public class TeacherViewModel
     [Required , DataType(DataType.EmailAddress)]
     public string Mail { get; set; }
 
-    [Required]
+    [Required, DataType(DataType.PhoneNumber)]
     public string PhoneNumber { get; set; }
 }

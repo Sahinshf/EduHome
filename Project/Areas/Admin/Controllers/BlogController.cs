@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Project.Utils;
+using Project.Areas.Admin.ViewModels;
 
 namespace Project.Areas.Admin.Controllers;
 
@@ -40,9 +41,15 @@ public class BlogController : Controller
     {
         if (!ModelState.IsValid) return View();
 
+
         if (blogViewModel.Image is null)
         {
             ModelState.AddModelError("Image", "Add Image");
+            return View();
+        }
+        if (!blogViewModel.Image.CheckFileType("Image"))
+        {
+            ModelState.AddModelError("Image", "File Type Must be Image.");
             return View();
         }
 
@@ -76,7 +83,7 @@ public class BlogController : Controller
 
     public async Task<IActionResult> Update(int id)
     {
-        Blog blog =await _context.Blogs.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        Blog blog = await _context.Blogs.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         if (blog == null) return NotFound();
 
         BlogViewModel blogViewModel = new()
@@ -85,7 +92,7 @@ public class BlogController : Controller
             Name = blog.Name,
             Created = blog.Created,
             Comment = blog.Comment,
-            Description= blog.Description,
+            Description = blog.Description,
         };
 
         return View(blogViewModel);
@@ -93,14 +100,20 @@ public class BlogController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(BlogViewModel blogViewModel , int id)
+    public async Task<IActionResult> Update(BlogViewModel blogViewModel, int id)
     {
         if (!ModelState.IsValid) return View();
+
         Blog blog = await _context.Blogs.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         if (blog == null) return NotFound();
 
         if (blogViewModel.Image != null)
         {
+            if (!blogViewModel.Image.CheckFileType("image"))
+            {
+                ModelState.AddModelError("Image", "File Type Must be Image.");
+                return View();
+            }
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "blog", blog.Image);
             FileService.DeleteFile(path);
 

@@ -41,6 +41,12 @@ public class TeacherController : Controller
         if (!ModelState.IsValid) return View();
 
         if (teacherViewModel.Image == null) { ModelState.AddModelError("Image", "Select Image"); return View(); }
+        if (!teacherViewModel.Image.CheckFileType("image"))
+        {
+            ModelState.AddModelError("Image", "File Type Must be Image.");
+            return View();
+        }
+
 
         string filename = $"{Guid.NewGuid()}-{teacherViewModel.Image.FileName}";
         string path = Path.Combine(_webHostEnvironment.WebRootPath, "img", "teacher", filename);
@@ -106,6 +112,11 @@ public class TeacherController : Controller
 
         if (teacherViewModel.Image != null)
         {
+            if (!teacherViewModel.Image.CheckFileType("image"))
+            {
+                ModelState.AddModelError("Image", "File Type Must be Image.");
+                return View();
+            }
             var oldPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "teacher", teacher.Image);
             FileService.DeleteFile(oldPath);
 
@@ -134,10 +145,10 @@ public class TeacherController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
-        Teacher teacher =await _context.Teachers.Include(c=>c.Skills).FirstOrDefaultAsync(c=> c.Id == id && !c.IsDeleted);
+        Teacher teacher = await _context.Teachers.Include(c => c.Skills).FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         if (teacher is null) return BadRequest();
 
         teacher.Skills = teacher.Skills.Where(c => !c.IsDeleted).ToList();

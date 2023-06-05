@@ -2045,12 +2045,20 @@
       "PackagePath": "staticwebassets\\img\\banner\\banner.jpg"
     },
     {
+      "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\blog\\01a1be62-888c-49ab-a5e2-a26afc47935b-pronia-html-full-unzip-first-v1.0.3.rar",
+      "PackagePath": "staticwebassets\\img\\blog\\01a1be62-888c-49ab-a5e2-a26afc47935b-pronia-html-full-unzip-first-v1.0.3.rar"
+    },
+    {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\blog\\3c960cfd-b8e7-40d2-8e0e-04e682056f28-blog-img.jpg",
       "PackagePath": "staticwebassets\\img\\blog\\3c960cfd-b8e7-40d2-8e0e-04e682056f28-blog-img.jpg"
     },
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\blog\\3cf1c741-ffb6-462f-ad07-7bc086dad971-blog2.jpg",
       "PackagePath": "staticwebassets\\img\\blog\\3cf1c741-ffb6-462f-ad07-7bc086dad971-blog2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\blog\\54447c98-f226-4498-9d0d-da64f1c4eb22-scrnli_5_30_2023_11-43-01 AM.png",
+      "PackagePath": "staticwebassets\\img\\blog\\54447c98-f226-4498-9d0d-da64f1c4eb22-scrnli_5_30_2023_11-43-01 AM.png"
     },
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\blog\\59a64a99-04d6-484a-97b6-c049b65d7f4b-blog8.jpg",
@@ -2249,6 +2257,10 @@
       "PackagePath": "staticwebassets\\img\\event\\22860fb0-daba-4e05-b58f-c3978e45767d - event6.jpg"
     },
     {
+      "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\event\\5cca3211-a716-4f1f-82f1-cbf7c5bcb4d5 - scrnli_5_30_2023_11-50-52 AM.png",
+      "PackagePath": "staticwebassets\\img\\event\\5cca3211-a716-4f1f-82f1-cbf7c5bcb4d5 - scrnli_5_30_2023_11-50-52 AM.png"
+    },
+    {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\event\\60504dfa-69de-47a5-9640-4987473918af - event9.jpg",
       "PackagePath": "staticwebassets\\img\\event\\60504dfa-69de-47a5-9640-4987473918af - event9.jpg"
     },
@@ -2275,6 +2287,10 @@
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\event\\cf6ac7d5-e4b1-4fad-8738-9a9f1b4e4a09 - event12.jpg",
       "PackagePath": "staticwebassets\\img\\event\\cf6ac7d5-e4b1-4fad-8738-9a9f1b4e4a09 - event12.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\event\\d84e734b-3a6c-4a73-922f-0489ce45a2bd - watch.htm",
+      "PackagePath": "staticwebassets\\img\\event\\d84e734b-3a6c-4a73-922f-0489ce45a2bd - watch.htm"
     },
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\event\\event-details.jpg",
@@ -2415,6 +2431,10 @@
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\teacher\\0edf2acc-13dc-4ae0-a80c-90d2a371fa0a - teacher7.jpg",
       "PackagePath": "staticwebassets\\img\\teacher\\0edf2acc-13dc-4ae0-a80c-90d2a371fa0a - teacher7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\teacher\\1bd5c743-39be-44b1-805e-a0dc5dff94e5-scrnli_5_30_2023_11-43-01 AM.png",
+      "PackagePath": "staticwebassets\\img\\teacher\\1bd5c743-39be-44b1-805e-a0dc5dff94e5-scrnli_5_30_2023_11-43-01 AM.png"
     },
     {
       "Id": "C:\\Users\\Şahin\\Desktop\\Backend - Code\\EduHome\\Project\\wwwroot\\img\\teacher\\21de5bd5-f85a-4459-b91c-c2a90d153969 - teacher9.jpg",
