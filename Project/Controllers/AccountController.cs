@@ -68,9 +68,54 @@ public class AccountController : Controller
 
         await _userManager.AddToRoleAsync(newUser, RoleType.Member.ToString()); // Register olan user ilk halda Member olur
 
+
+        var token = Guid.NewGuid().ToString();  // Reset Token for user
+
+        // Action       //Controller     //url`nin daxilində olanlar        // https
+        string url = Url.Action("Verify", "Account", new { email = registerViewModel.Email, token = token }, HttpContext.Request.Scheme); // Reset password üçün url yaradırıq
+
+        // Send email section
+        EmailHelper emailHelper = new EmailHelper();
+
+        MailRequestViewModel mailRequestViewModel = new()
+        {
+
+            ToEmail = registerViewModel.Email,
+            Subject = "Confirm Your Email",
+            Body = $"<a href='{url}'>Confirm Your Email </a>"
+        };
+
+        await emailHelper.SendEmailAsync(mailRequestViewModel);
+
         return RedirectToAction(nameof(Login));
     }
 
+
+    public async Task<IActionResult> Verify(string email, string token)
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+        {
+            return BadRequest();
+        }
+
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return NotFound();
+
+        user.EmailConfirmed = true;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return RedirectToAction(nameof(Login));
+
+        }
+        else
+        {
+            return View("VerificationError");
+        }
+
+    }
 
     public IActionResult Login()
     {
@@ -87,14 +132,10 @@ public class AccountController : Controller
     public async Task<IActionResult> Login(LoginViewModel loginViewModel)
     {
         if (User.Identity.IsAuthenticated) // Login olub olmadığını yoxlayır
-        {
             return BadRequest();
-        }
 
-        if (!ModelState.IsValid)
-        {
-            return View();
-        }
+
+        if (!ModelState.IsValid) return View();
 
         var user = await _userManager.FindByNameAsync(loginViewModel.UserName); //Find user by user name
         if (user == null)
@@ -107,9 +148,14 @@ public class AccountController : Controller
             ModelState.AddModelError("", "Your account is blocked ");
             return View();
         }
+        if (user.EmailConfirmed == false)
+        {
+            ModelState.AddModelError("", "Please Confirm Your account ");
+            return View();
+        }
 
         //var signInResult = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, loginViewModel.RememberMe, true)
-        var signInResult = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, loginViewModel.RememberMe, false ); //useri login etmək
+        var signInResult = await _signInManager.PasswordSignInAsync(loginViewModel.UserName, loginViewModel.Password, loginViewModel.RememberMe, false); //useri login etmək
 
         if (signInResult.IsLockedOut)
         {
@@ -173,17 +219,18 @@ public class AccountController : Controller
 
         string token = await _userManager.GeneratePasswordResetTokenAsync(user); // Generate Reset Password Token for user
 
-                                // Action       //Controller     //url`nin daxilində olanlar        // https
+        // Action       //Controller     //url`nin daxilində olanlar        // https
         string url = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, HttpContext.Request.Scheme); // Reset password üçün url yaradırıq
 
         // Send email section
         EmailHelper emailHelper = new EmailHelper();
 
-        MailRequestViewModel mailRequestViewModel = new() { 
-        
-            ToEmail=user.Email,
+        MailRequestViewModel mailRequestViewModel = new()
+        {
+
+            ToEmail = user.Email,
             Subject = "Reset your password",
-            Body = $"<a href='{url }'>Reset your password </a>"
+            Body = $"<a href='{url}'>Reset your password </a>"
         };
 
         await emailHelper.SendEmailAsync(mailRequestViewModel);
